@@ -26,10 +26,26 @@ The standalone exe unpacks itself into a temporary folder every time it launches
 - The installer does **not** require administrator rights
 - Saved split presets and settings are shared between both builds
 
+<br>
+
+## Verifying your download (recommended)
+
+This tool is **not code-signed**. To check that the file you downloaded is the one that was published, compare its SHA-256 hash.
+
+1. Every release lists the SHA-256 of each file in its notes (and attaches `SHA256SUMS.txt`).
+2. Compute the hash of your download in PowerShell:
+
+   ```powershell
+   Get-FileHash .\ExcelSlicer_v4.exe -Algorithm SHA256
+   ```
+
+3. Confirm it **matches** the value in the release notes before running the file. If it does not match, do not run it — delete it.
+
 > **About the warning on first launch**
-> This is an unsigned tool written by an individual, so Windows may show a blue
-> “Windows protected your PC” screen the first time you run it.
-> Click **More info** → **Run anyway**.
+> Because the tool is unsigned, even after verifying the hash Windows may show a blue
+> “Windows protected your PC” screen the first time you run it (SmartScreen reacts to
+> the missing signature).
+> Once you have confirmed the hash matches, click **More info** → **Run anyway**.
 
 <br>
 
