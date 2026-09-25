@@ -16,8 +16,8 @@ Two builds are available. They are the same tool.
 
 | | File | Notes |
 |---|---|---|
-| **Standalone exe** | `ExcelSlicer_v4.exe` | No installation. Download and double-click. Starts in about 2–3 seconds |
-| **Installer** | `ExcelSlicer_v4_setup.exe` | Installed build. **Starts in about 1 second.** Choose this if startup time matters |
+| **Standalone exe** | `ExcelSlicer_v6.exe` | No installation. Download and double-click. Starts in about 2–3 seconds |
+| **Installer** | `ExcelSlicer_v6_setup.exe` | Installed build. **Starts in about 1 second.** Choose this if startup time matters |
 
 The standalone exe unpacks itself into a temporary folder every time it launches, which costs a few seconds. The installed build skips that step.
 
@@ -36,7 +36,7 @@ This tool is **not code-signed**. To check that the file you downloaded is the o
 2. Compute the hash of your download in PowerShell:
 
    ```powershell
-   Get-FileHash .\ExcelSlicer_v4.exe -Algorithm SHA256
+   Get-FileHash .\ExcelSlicer_v6.exe -Algorithm SHA256
    ```
 
 3. Confirm it **matches** the value in the release notes before running the file. If it does not match, do not run it — delete it.
@@ -60,21 +60,40 @@ This tool is **not code-signed**. To check that the file you downloaded is the o
 | Saved presets | Name a set of settings and recall it from a dropdown next time |
 | Japanese / English | Switch the interface language from the **language** button at the top right (no restart) |
 | Output filename pattern | Choose from 3 naming patterns (defaults to the original layout) |
+| Output mode | Choose **Split by key** (one file per column value) or **Split by sheet** (one file per sheet) |
+| Export progress | Shows progress when exporting takes a while, and lets you cancel |
 
 <br>
 
 ## Basic usage
 
-1. Double-click `ExcelSlicer_v4.exe` (or the installed Excel Slicer) to start it
+1. Double-click `ExcelSlicer_v6.exe` (or the installed Excel Slicer) to start it
 2. **Drag & drop** an Excel file onto the area at the top, or click inside the dashed box to pick one
 3. The sheet appears in the tool, laid out the way Excel shows it
-4. Use the **mode buttons** in the middle to choose what you are setting, then click column headers (A, B, C…) or row numbers on the grid
+4. Pick the **Mode** at the top (normally *Split by key*), then use the **mode buttons** in the middle to choose what you are setting, then click column headers (A, B, C…) or row numbers on the grid
 5. Tick what you want to export under **Choose the data to export**
 6. Set an output folder with **Change...**, then press **Split and save**
 
 <br>
 
+## Output mode (Split by key / Split by sheet)
+
+The **Mode:** buttons just below the file box choose how the files are divided. The mode you pick is remembered the next time you start the tool.
+
+| Mode | What it does |
+|---|---|
+| **Split by key** | One file per value in the split key column (the original behaviour). All sheets marked for export go into the same file. |
+| **Split by sheet** | Ignores the split key and other settings, and saves each sheet as-is to its own file. Tick the sheets you want in the list. |
+
+- In *Split by key*, tick **Also split each sheet into its own file** next to it to get one file per value *and* per sheet (for example `【Tokyo】sales_2026-08.xlsx`). Files are not created for sheets that do not contain that value.
+- In *Split by sheet*, the mode buttons, the hint bar and the preset row are hidden.
+- When sheets are split apart, formulas that refer to other sheets may not calculate correctly, because those sheets are not in the output file.
+
+<br>
+
 ## The four mode buttons
+
+Shown in *Split by key* mode.
 
 ### Split key column
 Click a column header to make that column the basis for splitting (shown in green). Click again to clear it.
@@ -126,6 +145,7 @@ The **Filename:** dropdown lets you choose how the output files are named.
 | filename（key） | `sales（Tokyo）.xlsx` |
 
 The default matches the original naming, so files come out named the same way as before unless you change it.
+In *Split by sheet* mode the **sheet name** takes the place of the split key (for example `【2026-08】sales.xlsx`).
 
 <br>
 
@@ -143,6 +163,9 @@ A. Data rows that do not match the split key are removed, and the file is saved 
 
 **Q. I deleted a column from the middle of the table and the formulas broke.**
 A. Deleting a column anywhere other than the end can break formulas that referenced it, and merged cells that span the deletion point. The tool warns you on screen when you do this — always check the exported files. Trimming columns off the end (right-click → *Delete this column and everything after it*) does not have this problem.
+
+**Q. Exporting is taking a while. Has it frozen?**
+A. When there are many files, a progress window such as “Exporting… 3 / 12” appears. Press **Cancel** to stop after the file currently being written finishes (files already written are kept).
 
 **Q. Only some rows show up for a large sheet.**
 A. The preview shows the first 5000 rows, but **splitting processes every row** in the sheet.
